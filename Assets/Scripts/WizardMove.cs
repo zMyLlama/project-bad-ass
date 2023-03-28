@@ -15,7 +15,9 @@ public class WizardMove : MonoBehaviour
     public float runrange;
     Transform currentTarget;
 
+    float CD = 0;
 
+    public GameObject fireballPrefab;
 
     // Start is called before the first frame update
     void Start()
@@ -43,6 +45,12 @@ public class WizardMove : MonoBehaviour
             rigidbody.velocity = direction / RunSpeed;
         }
 
-
+        CD += Time.deltaTime;
+        if(CD >= 5)
+        {
+            GameObject fireball = Instantiate(fireballPrefab, transform.position, Quaternion.identity);
+            fireball.GetComponent<Fireball>().Player = Player;
+            CD = 0;
+        }
     }
 }

@@ -305,7 +305,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0.90040064, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -342,6 +342,7 @@ GameObject:
   - component: {fileID: 934341344}
   - component: {fileID: 934341343}
   - component: {fileID: 934341342}
+  - component: {fileID: 934341346}
   m_Layer: 0
   m_Name: Wizard
   m_TagString: Untagged
@@ -387,6 +388,7 @@ MonoBehaviour:
   Player: {fileID: 169577394}
   detectionrange: 10
   runrange: 0
+  fireballPrefab: {fileID: 7420190174224236576, guid: 80386e8cab0e2804f8c43f3c4d782ab7, type: 3}
 --- !u!212 &934341344
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -454,6 +456,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &934341346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 934341341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77492ba413c7a234c9ecf9b9102563a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1077493652
 GameObject:
   m_ObjectHideFlags: 0
@@ -508,7 +522,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 4.7946343
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
