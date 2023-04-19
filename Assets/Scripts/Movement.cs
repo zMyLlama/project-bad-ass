@@ -16,7 +16,7 @@ public class Movement : MonoBehaviour
     [Header("Other")]
     public Animator playerAnimator;
     public Transform feetLocation;
-    public GameObject dustCloud; 
+    public GameObject dustCloud;
     #endregion
 
     #region Private Variables
@@ -26,7 +26,7 @@ public class Movement : MonoBehaviour
     #endregion
 
     #region Methods
-    private IEnumerator walkLoop() {
+    private IEnumerator WalkLoop() {
         while (true)
         {
             GameObject _dustCloudClone = Instantiate(dustCloud, feetLocation.position, Quaternion.identity);
@@ -54,7 +54,6 @@ public class Movement : MonoBehaviour
     KeyCode _lastPressedXVelocityKey;
     KeyCode _lastPressedYVelocityKey;
     IEnumerator _walkLoopCoroutine = null;
-    int _currentPlayingAnimationIndex;
     void Update()
     {
         foreach (var key in movementKeybinds) {
@@ -62,11 +61,8 @@ public class Movement : MonoBehaviour
 
             if (Input.GetKeyDown(key))
             {
-                playerAnimator.Play(representingAnimationNames[_keybindLocationInList]);
-                _currentPlayingAnimationIndex = _keybindLocationInList;
-
                 if (_walkLoopCoroutine == null) {
-                    _walkLoopCoroutine = walkLoop();
+                    _walkLoopCoroutine = WalkLoop();
                     StartCoroutine(_walkLoopCoroutine);
                 }
 
@@ -74,6 +70,8 @@ public class Movement : MonoBehaviour
                     _lastPressedYVelocityKey = key;
                     yVelocity = representingMovementVelocities[_keybindLocationInList];
                 } else {
+                    playerAnimator.Play(representingAnimationNames[_keybindLocationInList]);
+                    
                     _lastPressedXVelocityKey = key;
                     xVelocity = representingMovementVelocities[_keybindLocationInList];
                 }
@@ -89,6 +87,12 @@ public class Movement : MonoBehaviour
             }
         }
 
+        if (yVelocity == (representingMovementVelocities[0]) && xVelocity == 0) {
+            playerAnimator.Play(representingAnimationNames[0]);
+        } else if (yVelocity == (representingMovementVelocities[2]) && xVelocity == 0) {
+            playerAnimator.Play(representingAnimationNames[2]);
+        }
+
         if (_rb.velocity == new Vector2(0, 0) && _walkLoopCoroutine != null) {
             StopCoroutine(_walkLoopCoroutine);
             _walkLoopCoroutine = null;
@@ -96,6 +100,7 @@ public class Movement : MonoBehaviour
 
         _rb.velocity = new Vector2(xVelocity, yVelocity);
         if (xVelocity < 0) { transform.localScale = new Vector3(-1, 1, 1); } else if (xVelocity > 0) { transform.localScale = new Vector3(1, 1, 1); };
+        if (xVelocity < 0) { transform.GetChild(0).transform.localScale = new Vector3(1, 1, 1); } else if (xVelocity > 0) { transform.GetChild(0).transform.localScale = new Vector3(-1, 1, 1); };
         playerAnimator.SetFloat("velocityX", xVelocity);
         playerAnimator.SetFloat("velocityY", yVelocity);
     }
