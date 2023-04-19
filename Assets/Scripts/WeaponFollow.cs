@@ -6,6 +6,7 @@ using UnityEngine;
 public class WeaponFollow : MonoBehaviour
 {
     public GameObject player;
+    public Combat combatScript;
     public float radius = 1.0f;
     private Rigidbody2D playerRigidbody;
 
@@ -28,13 +29,26 @@ public class WeaponFollow : MonoBehaviour
     };
 
     Vector2 _lastNormalizedVelocity = new Vector2(0f, 0f);
+    float _deltaTimeOnLastRotation = Time.time;
     public void FixedUpdate() {
         Vector2 _velocityNormalized = new Vector2(playerRigidbody.velocity.x, playerRigidbody.velocity.y).normalized;
         _velocityNormalized = new Vector2(Mathf.Floor(_velocityNormalized.x * 10f) / 10f, Mathf.Floor(_velocityNormalized.y * 10f) / 10f);
 
         if (_lastNormalizedVelocity != _velocityNormalized) {
-            print("Apply rotation");
-            transform.DORotate(new Vector3(0, 0, _velocityToRotation[_velocityNormalized]), 0.2f);
+            float _timeSinceLastAttack = Time.time - _deltaTimeOnLastRotation;
+            float _currentAttackSpeed = combatScript.currentSwordAttackSpeed;
+
+            if (_timeSinceLastAttack < 0.15) {
+                if (_timeSinceLastAttack <= 0.08) combatScript.currentSwordAttackSpeed = Mathf.Clamp(_currentAttackSpeed += 0.1f, combatScript.fastestAttackSpeed, combatScript.slowestAttackSpeed);
+                if (_timeSinceLastAttack > 0.08) combatScript.currentSwordAttackSpeed = Mathf.Clamp(_currentAttackSpeed += 0.05f, combatScript.fastestAttackSpeed, combatScript.slowestAttackSpeed);
+            } else {
+                if (_timeSinceLastAttack <= 1 && _timeSinceLastAttack > 0.4) combatScript.currentSwordAttackSpeed = Mathf.Clamp(_currentAttackSpeed -= 0.5f, combatScript.fastestAttackSpeed, combatScript.slowestAttackSpeed);
+                if (_timeSinceLastAttack <= 0.4) combatScript.currentSwordAttackSpeed = Mathf.Clamp(_currentAttackSpeed -= 0.2f, combatScript.fastestAttackSpeed, combatScript.slowestAttackSpeed);
+                if (_timeSinceLastAttack > 1) combatScript.currentSwordAttackSpeed = combatScript.fastestAttackSpeed;
+            }
+
+            transform.DORotate(new Vector3(0, 0, _velocityToRotation[_velocityNormalized]), combatScript.currentSwordAttackSpeed);
+            _deltaTimeOnLastRotation = Time.time;
         }
         _lastNormalizedVelocity = _velocityNormalized;
     }

@@ -99,8 +99,7 @@ public class Movement : MonoBehaviour
         }
 
         _rb.velocity = new Vector2(xVelocity, yVelocity);
-        if (xVelocity < 0) { transform.localScale = new Vector3(-1, 1, 1); } else if (xVelocity > 0) { transform.localScale = new Vector3(1, 1, 1); };
-        if (xVelocity < 0) { transform.GetChild(0).transform.localScale = new Vector3(1, 1, 1); } else if (xVelocity > 0) { transform.GetChild(0).transform.localScale = new Vector3(-1, 1, 1); };
+        if (xVelocity < 0) { transform.GetChild(1).GetComponent<SpriteRenderer>().flipX = true; } else if (xVelocity > 0) { transform.GetChild(1).GetComponent<SpriteRenderer>().flipX = false; };
         playerAnimator.SetFloat("velocityX", xVelocity);
         playerAnimator.SetFloat("velocityY", yVelocity);
     }
