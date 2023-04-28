@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class WizardMove : MonoBehaviour
 {
+    //Script til mage fjende.
+
     public int Speed;
     private float RunSpeed;
     public int hp;
@@ -31,6 +33,7 @@ public class WizardMove : MonoBehaviour
         Speed = 4;
         RunSpeed = -0.3f;
 
+        //Her indlæser jeg rigidbodyen samt bestæmmer hastighed, liv og gør så den kan løbe fra spilleren.
     }
 
     // Update is called once per frame
@@ -39,10 +42,12 @@ public class WizardMove : MonoBehaviour
         Vector3 direction = currentTarget.position - transform.position;
         direction.Normalize();
         rigidbody.velocity = direction * Speed;
+        // Det her er til at bevæge sig imod spilleren
 
         if (runrange > Vector3.Distance(transform.position, Player.position))
         {
             rigidbody.velocity = direction / RunSpeed;
+            // Det her er så at magen flygter/løber fra spilleren hvis den kommer for tæt på.
         }
 
         CD += Time.deltaTime;
@@ -51,6 +56,7 @@ public class WizardMove : MonoBehaviour
             GameObject fireball = Instantiate(fireballPrefab, transform.position, Quaternion.identity);
             fireball.GetComponent<Fireball>().Player = Player;
             CD = 0;
+            // Det her er til at magen skyder  en ildkule imod spilleren med et interval i sekunder.
         }
     }
 }
