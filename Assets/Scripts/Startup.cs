@@ -9,6 +9,7 @@ using DG.Tweening;
 public class Startup : MonoBehaviour
 {
     [Header("Settings")]
+    [SerializeField] bool developmentMode = false;
     [SerializeField] float orthographicGoToSize = 6f;
     [SerializeField] string welcomeMessage = "THE DUNGEON";
     [Header("Objects")]
@@ -65,6 +66,7 @@ public class Startup : MonoBehaviour
     }
 
     private void Awake() {
+        if (developmentMode) return;
         cinemachineVirtualCamera = GetComponent<CinemachineVirtualCamera>();
 
         screenCover.color = new Color32(0, 0, 0, 255);

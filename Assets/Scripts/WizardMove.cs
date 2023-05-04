@@ -45,7 +45,7 @@ public class WizardMove : MonoBehaviour
     }
 
     IEnumerator shootFireball() {
-        shakeManager.addShakeWithPriority(1, 1, 1f, 1);
+        shakeManager.addShakeWithPriority(1, 1, timeBetweenChargeAndFireball, 1);
         chargeParticle.GetComponent<ParticleSystem>().Play();
         
         yield return new WaitForSeconds(timeBetweenChargeAndFireball);
@@ -94,6 +94,7 @@ public class WizardMove : MonoBehaviour
         StartCoroutine("flashWhite");
         if (currentHealth <= 0) {
             dead = true;
+            Destroy(gameObject, 1f);
             currentHealth = 0;
 
             rippleFullscreen.material.SetFloat("_WaveDistanceFromCenter", -0.1f);

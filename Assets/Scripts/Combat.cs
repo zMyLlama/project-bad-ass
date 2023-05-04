@@ -15,7 +15,8 @@ public class Combat : MonoBehaviour
     [Range(0.2f, 5f)] public float slowestAttackSpeed = 2f;
     [Range(0.2f, 5f)] public float fastestAttackSpeed = 0.2f;
     [Range(0.2f, 5f)] public float currentSwordAttackSpeed = 0.2f;
-    public float baseDamage = 12.5f;
+    public float maxiumumDamage = 12.5f;
+    public float minimumDamage = 5f;
     public float attackCooldown = 0.15f;
 
     [Header("Objects")]
@@ -24,10 +25,12 @@ public class Combat : MonoBehaviour
     public ShakeManager shakeManager;
     public Animator weaponAnimator;
 
+    float Remap(float value, float from1, float to1, float from2, float to2) {
+        return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
+    }
+
     private void Start() {
         health = hearts * amountOfHeartStates;
-
-        Debug.Log("Full hearts: " + Mathf.Floor(health / amountOfHeartStates));
         damagePlayer(0);
     }
 
@@ -35,12 +38,11 @@ public class Combat : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0)) {
             damagePlayer(1);
-            shakeManager.addShakeWithPriority(1, 1, 5f, 10);
         }
     }
 
     public void damagePlayer(int amount) {
-        health--;
+        health -= amount;
         for (int i = 0; i < heartsHolder.transform.childCount; i++)
         {
             Destroy(heartsHolder.transform.GetChild(i).gameObject);
@@ -66,17 +68,17 @@ public class Combat : MonoBehaviour
             _heartClone.transform.localScale = new Vector3(1, 1, 1);
         }
 
-        Debug.Log("Full hearts: " + Mathf.Floor(health / amountOfHeartStates));
+        /*Debug.Log("Full hearts: " + Mathf.Floor(health / amountOfHeartStates));
         if (health % amountOfHeartStates != 0.0f) {Debug.Log("Missing heart state: " + health % amountOfHeartStates);} else {Debug.Log("No missing heart state");}
         Debug.Log("Empty hearts: " + (hearts - Mathf.Ceil(health / amountOfHeartStates)));
 
-        Debug.Log("------------------------");
+        Debug.Log("------------------------");*/
     }
 
     public void swordCollisionEvent(Collider2D other) {
         if (other.tag != "Enemy") return;
 
-        other.gameObject.GetComponent<WizardMove>().takeDamage(baseDamage);
+        other.gameObject.GetComponent<WizardMove>().takeDamage(Remap(currentSwordAttackSpeed, fastestAttackSpeed, slowestAttackSpeed, maxiumumDamage, minimumDamage));
         shakeManager.addShakeWithPriority(2, 1, 0.1f, 1);
     }
 }
