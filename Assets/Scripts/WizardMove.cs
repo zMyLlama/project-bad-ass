@@ -2,25 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class WizardMove : MonoBehaviour
 {
     //Script til mage fjende.
 
-    [Header("Variables")]
+    [Header("Settings")]
     public float maxHealth = 50.0f;
     public int Speed = 4;
     public float runSpeed = -0.3f;
     public int HP = 5;
     public float runRange = 6;
+    [SerializeField] float timeBetweenChargeAndFireball = 1.5f;
     [Header("Hostility")]
     public Transform target;
     [Header("Objects")]
     public GameObject[] disableOnDeath = new GameObject[ ]{};
+    public ShakeManager shakeManager;
     public SpriteRenderer mySprite;
     public GameObject fireballPrefab;
     public GameObject explosionParticle;
+    public GameObject chargeParticle;
     public Image radialHealth;
+    public SpriteRenderer rippleFullscreen; 
 
 
     Rigidbody2D rb;
@@ -39,29 +44,40 @@ public class WizardMove : MonoBehaviour
         originalColor = mySprite.color;
     }
 
+    IEnumerator shootFireball() {
+        shakeManager.addShakeWithPriority(1, 1, 1f, 1);
+        chargeParticle.GetComponent<ParticleSystem>().Play();
+        
+        yield return new WaitForSeconds(timeBetweenChargeAndFireball);
+
+        shakeManager.addShakeWithPriority(4, 2, 0.2f, 10);
+        chargeParticle.GetComponent<ParticleSystem>().Stop();
+
+        GameObject fireball = Instantiate(fireballPrefab, transform.position, Quaternion.identity);
+        fireball.GetComponent<Fireball>().Player = target;
+        CD = 0;
+    }
+
     float CD = 0;
+    int timeUntilNextAttack = 5;
     void Update()
     {
         if (dead) return;
+        if (CD == -1) rb.velocity = new Vector2(0, 0);
 
         Vector3 direction = target.position - transform.position;
         direction.Normalize();
-        rb.velocity = direction * Speed;
-        // Det her er til at bev�ge sig imod spilleren
+        if (CD != -1) rb.velocity = direction * Speed;
 
-        if (runRange > Vector3.Distance(transform.position, target.position))
-        {
+        if (runRange > Vector3.Distance(transform.position, target.position) && CD != -1)
             rb.velocity = direction / runSpeed;
-            // Det her er s� at magen flygter/l�ber fra spilleren hvis den kommer for t�t p�.
-        }
 
-        CD += Time.deltaTime;
-        if(CD >= 5)
+        if (CD != -1) CD += Time.deltaTime;
+        if(CD >= timeUntilNextAttack && CD != -1)
         {
-            GameObject fireball = Instantiate(fireballPrefab, transform.position, Quaternion.identity);
-            fireball.GetComponent<Fireball>().Player = target;
-            CD = 0;
-            // Det her er til at magen skyder  en ildkule imod spilleren med et interval i sekunder.
+            CD = -1;
+            timeUntilNextAttack = Random.Range(5, 10);
+            StartCoroutine("shootFireball");
         }
     }
 
@@ -80,6 +96,11 @@ public class WizardMove : MonoBehaviour
             dead = true;
             currentHealth = 0;
 
+            rippleFullscreen.material.SetFloat("_WaveDistanceFromCenter", -0.1f);
+            rippleFullscreen.material.DOFloat(1, "_WaveDistanceFromCenter", 1f).OnComplete(() => rippleFullscreen.material.SetFloat("_WaveDistanceFromCenter", -0.1f));
+
+            shakeManager.addShakeWithPriority(6, 1, 0.2f, 2);
+            rb.constraints = RigidbodyConstraints2D.FreezeAll;
             explosionParticle.GetComponent<ParticleSystem>().Play();
             for (int i = 0; i < disableOnDeath.Length; i++)
             {
