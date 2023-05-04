@@ -78,7 +78,7 @@ public class Combat : MonoBehaviour
     public void swordCollisionEvent(Collider2D other) {
         if (other.tag != "Enemy") return;
 
-        other.gameObject.GetComponent<WizardMove>().takeDamage(Remap(currentSwordAttackSpeed, fastestAttackSpeed, slowestAttackSpeed, maxiumumDamage, minimumDamage));
+        other.gameObject.GetComponent<EnemyController>().takeDamage(Remap(currentSwordAttackSpeed, fastestAttackSpeed, slowestAttackSpeed, maxiumumDamage, minimumDamage));
         shakeManager.addShakeWithPriority(2, 1, 0.1f, 1);
     }
 }

@@ -17,6 +17,7 @@ public class EnemiesLeft : MonoBehaviour
     }
 
     private void FixedUpdate() {
-        _text.text = label + ": " + enemiesHolder.transform.childCount;
+        if (enemiesHolder.transform.childCount > 0) _text.text = label + ": " + enemiesHolder.transform.childCount;
+        if (enemiesHolder.transform.childCount == 0) _text.text = "ROOM CLEARED!";
     }
 }

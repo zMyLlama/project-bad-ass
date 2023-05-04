@@ -6,17 +6,21 @@ TagManager:
   tags:
   - Enemy
   - Cinemachine
+  - Cleaner
+  - HUD
+  - Confiner
+  - Enemies
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Tilemap
   - Water
   - UI
   - Player
   - Enemies
   - Damager
-  - 
+  - Doors
   - 
   - 
   - 
