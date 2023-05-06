@@ -1,30 +1,39 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class Fireball : MonoBehaviour
 { 
-  public float Speed = 10f;
+  public Bullet_Settings bulletExtendsTo;
+  [HideInInspector] public Bullet_Settings bulletSettings;
 
-    public Transform Player;
+  private Vector3 direction;
 
-    private Vector3 target;
+  private void Awake() {
+    bulletSettings = bulletExtendsTo;
+  }
 
-    private void Start()
-    {
-    target = Player.transform.position;
-      //Det her er til at se hvor spilleren står i det øjeblik den bliver skudt.
+  private void Start() {
+    transform.localScale = bulletSettings.scale / 2;
+    transform.DOScale(bulletSettings.scale, 0.5f).SetEase(Ease.OutBack);
+
+    direction = (bulletSettings.target - transform.position).normalized;
+  }
+
+  private void Update()
+  {
+    transform.position += direction * bulletSettings.speed * Time.deltaTime;
+  }
+
+  private void OnTriggerEnter2D(Collider2D other) {
+    if (other.tag != "Player") {
+      Destroy(gameObject);
+      return;
     }
 
-    private void Update()
-    {
-    transform.position = Vector3.MoveTowards(transform.position, target, Speed * Time.deltaTime);
-     //Det her er til at bevæge sig til spilleren x,y og z koordinator når ildkulen bliver "skudt"/spawner
+    //other.gameObject
 
-        if(target == transform.position)
-        {
-            Destroy(this.gameObject);
-            //Det her er til at fjerne/slette ildkulen når den når til spillerens position, så spillet ikke bliver fyldt op af ildkugler.
-        }
-    }
+    //Destroy(gameObject);
+  }
 }

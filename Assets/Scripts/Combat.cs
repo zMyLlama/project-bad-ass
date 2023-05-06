@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Rendering;
 
 public class Combat : MonoBehaviour
 {
@@ -24,6 +25,7 @@ public class Combat : MonoBehaviour
     public GameObject heart;
     public ShakeManager shakeManager;
     public Animator weaponAnimator;
+    public Volume globalVolume;
 
     float Remap(float value, float from1, float to1, float from2, float to2) {
         return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
@@ -67,16 +69,12 @@ public class Combat : MonoBehaviour
             _heartClone.transform.SetParent(heartsHolder.transform);
             _heartClone.transform.localScale = new Vector3(1, 1, 1);
         }
-
-        /*Debug.Log("Full hearts: " + Mathf.Floor(health / amountOfHeartStates));
-        if (health % amountOfHeartStates != 0.0f) {Debug.Log("Missing heart state: " + health % amountOfHeartStates);} else {Debug.Log("No missing heart state");}
-        Debug.Log("Empty hearts: " + (hearts - Mathf.Ceil(health / amountOfHeartStates)));
-
-        Debug.Log("------------------------");*/
     }
 
     public void swordCollisionEvent(Collider2D other) {
         if (other.tag != "Enemy") return;
+        Vector2 _direction = (other.gameObject.transform.position - transform.position).normalized;
+        other.gameObject.GetComponent<EnemyController>().applyKnockback(_direction, 2f, 0.1f);
 
         other.gameObject.GetComponent<EnemyController>().takeDamage(Remap(currentSwordAttackSpeed, fastestAttackSpeed, slowestAttackSpeed, maxiumumDamage, minimumDamage));
         shakeManager.addShakeWithPriority(2, 1, 0.1f, 1);

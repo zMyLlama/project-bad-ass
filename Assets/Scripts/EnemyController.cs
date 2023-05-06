@@ -7,24 +7,11 @@ using DG.Tweening;
 
 public class EnemyController : MonoBehaviour
 {
-    enum EnemyTypes { Wizard, Snake }
-    enum FightingStyles { Normal, Coward, Aggressive, PassiveAggressive }
-
-    [Header("Settings")]
-    [Tooltip("Changes the behavior of how the enemy works. Other settings will still have to be manually set.")] [SerializeField] EnemyTypes enemyType;
-    public float maxHealth = 50.0f;
-    public int Speed = 4;
-    public float runSpeed = -0.3f;
-    public int HP = 5;
-    public float runRange = 6;
-    [SerializeField] float timeBetweenChargeAndFireball = 1.5f;
-    [Header("Hostility")]
-    [SerializeField] FightingStyles fightingStyle;
+    [Header("Object Reference")]
+    public EnemyStats_Settings stats;
     [Header("Objects")]
     public GameObject[] disableOnDeath = new GameObject[ ]{};
     public SpriteRenderer mySprite;
-    public GameObject fireballPrefab;
-    public GameObject damageIndicator;
     public GameObject enemyHUD;
     public Image radialHealth;
     [Header("Particles")]
@@ -48,7 +35,7 @@ public class EnemyController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        currentHealth = maxHealth;
+        currentHealth = stats.maxHealth;
         originalColor = mySprite.color;
         _animator = GetComponent<Animator>();
 
@@ -58,18 +45,22 @@ public class EnemyController : MonoBehaviour
     }
 
     IEnumerator shootFireball() {
-        _shakeManager.addShakeWithPriority(1, 1, timeBetweenChargeAndFireball, 1);
+        _shakeManager.addShakeWithPriority(1, 1, stats.timeBetweenChargeAndFireball, 1);
         chargeParticle.GetComponent<ParticleSystem>().Play();
         
-        yield return new WaitForSeconds(timeBetweenChargeAndFireball);
+        yield return new WaitForSeconds(stats.timeBetweenChargeAndFireball);
 
         _shakeManager.addShakeWithPriority(4, 2, 0.2f, 10);
         chargeParticle.GetComponent<ParticleSystem>().Stop();
 
-        GameObject fireball = Instantiate(fireballPrefab, transform.position, Quaternion.identity);
-        fireball.GetComponent<Fireball>().Player = _target;
+        GameObject fireball = Instantiate(stats.primaryProjectilePrefab, transform.position, Quaternion.identity);
+        fireball.GetComponent<Fireball>().bulletSettings.target = _target.transform.position;
         CD = 0;
     }
+
+    float _knockbackTimer = 0;
+    float _knockbackForce;
+    Vector2 _knockbackDirection; 
 
     float CD = 0;
     int timeUntilNextAttack = 5;
@@ -78,12 +69,20 @@ public class EnemyController : MonoBehaviour
         if (dead) return;
         if (CD == -1) rb.velocity = new Vector2(0, 0);
 
-        Vector3 direction = _target.position - transform.position;
-        direction.Normalize();
-        if (CD != -1) rb.velocity = direction * Speed;
+        Vector2 direction = (_target.position - transform.position).normalized;
+        if (_knockbackTimer > 0)
+        {
+            rb.AddForce(_knockbackDirection * (_knockbackForce * 80) * Time.deltaTime, ForceMode2D.Impulse);
+            _knockbackTimer -= Time.deltaTime;
+            print(Time.deltaTime);
+        }
 
-        if (runRange > Vector3.Distance(transform.position, _target.position) && CD != -1)
-            rb.velocity = direction / runSpeed;
+        if (CD != -1 && _knockbackTimer <= 0)
+            rb.velocity = direction * stats.speed;
+
+        if (stats.fleeRange > Vector3.Distance(transform.position, _target.position) && CD != -1) {
+            //rb.velocity = direction / runSpeed;
+        }
 
         if (CD != -1) CD += Time.deltaTime;
         if(CD >= timeUntilNextAttack && CD != -1)
@@ -98,6 +97,12 @@ public class EnemyController : MonoBehaviour
         mySprite.color = Color.white;
         yield return new WaitForSeconds(0.2f);
         mySprite.color = originalColor;
+    }
+
+    public void applyKnockback(Vector2 direction, float force, float duration) {
+        _knockbackDirection = direction;
+        _knockbackForce = force;
+        _knockbackTimer = duration;
     }
 
     public void takeDamage(float amount) {
@@ -123,10 +128,10 @@ public class EnemyController : MonoBehaviour
                 disableOnDeath[i].SetActive(false);
             }
         } else {
-            GameObject _damageIndicatorClone = Instantiate(damageIndicator);
+            GameObject _damageIndicatorClone = Instantiate(stats.damageIndicator);
             Destroy(_damageIndicatorClone, 5f);
             _damageIndicatorClone.transform.SetParent(enemyHUD.transform);
-            _damageIndicatorClone.GetComponent<TextMeshProUGUI>().text = (healthBeforeAppliedDamage - currentHealth).ToString("F2");
+            _damageIndicatorClone.GetComponent<TextMeshProUGUI>().text = "-" + (healthBeforeAppliedDamage - currentHealth).ToString("F2");
 
             _damageIndicatorClone.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
             _damageIndicatorClone.transform.eulerAngles = new Vector3(0, 0, Random.Range(-20f, 20f));
@@ -137,6 +142,6 @@ public class EnemyController : MonoBehaviour
             hitParticle.GetComponent<ParticleSystem>().Play();
         }
 
-        radialHealth.fillAmount = Remap(currentHealth, 0f, maxHealth, 0f,  1f);
+        radialHealth.fillAmount = Remap(currentHealth, 0f, stats.maxHealth, 0f,  1f);
     }
 }

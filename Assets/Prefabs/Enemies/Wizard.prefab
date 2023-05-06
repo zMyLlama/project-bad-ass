@@ -4885,25 +4885,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20483f0e4280e9245b23565949fe7e61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyType: 0
-  maxHealth: 50
-  Speed: 4
-  runSpeed: -0.6
-  HP: 5
-  runRange: 6
+  stats: {fileID: 11400000, guid: cde537c96a4ad74408fe668e510dedb9, type: 2}
   timeBetweenChargeAndFireball: 1.5
-  target: {fileID: 0}
   fightingStyle: 1
   disableOnDeath:
   - {fileID: 296274555252465162}
   - {fileID: 296274554293372708}
-  shakeManager: {fileID: 0}
   mySprite: {fileID: 296274555252465172}
-  fireballPrefab: {fileID: 7420190174224236576, guid: 80386e8cab0e2804f8c43f3c4d782ab7, type: 3}
-  damageIndicator: {fileID: 9211842529041911785, guid: 54ad2455f5b126445a05a45ab65b8761, type: 3}
   enemyHUD: {fileID: 296274554293372708}
   radialHealth: {fileID: 296274555043453124}
-  rippleFullscreen: {fileID: 0}
   explosionParticle: {fileID: 296274555049784498}
   chargeParticle: {fileID: 296274555059830509}
   hitParticle: {fileID: 296274553980088276}

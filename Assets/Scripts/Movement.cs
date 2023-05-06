@@ -27,6 +27,7 @@ public class Movement : MonoBehaviour
     #region Private Variables
     Rigidbody2D _rb;
     Dictionary<int, string> representingAnimationNames = new Dictionary<int, string>();
+    [HideInInspector] public bool _isDashing = false;
     #endregion
 
     #region Methods
@@ -57,6 +58,13 @@ public class Movement : MonoBehaviour
         makeSpriteClone(Vector2.Lerp(start, end, 0.33f));
         yield return new WaitForSeconds(0.15f / 3f);
         makeSpriteClone(Vector2.Lerp(start, end, 0.66f));
+    }
+
+    Coroutine _dashEnableRoutine = null;
+    private IEnumerator handleDashEnabled() {
+        _isDashing = true;
+        yield return new WaitForSeconds(0.15f);
+        _isDashing = false;
     }
     #endregion
 
@@ -90,7 +98,9 @@ public class Movement : MonoBehaviour
 
             StartCoroutine(flashStep(gameObject.transform.position, _endDashPos));
             transform.DOMove(_endDashPos, 0.15f).SetId("Dash");
-
+            
+            if (_dashEnableRoutine != null) StopCoroutine(_dashEnableRoutine);
+            _dashEnableRoutine = StartCoroutine(handleDashEnabled());
         }
 
         foreach (var key in movementKeybinds) {

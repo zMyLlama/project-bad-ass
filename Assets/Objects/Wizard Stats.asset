@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a87543b6ca100d846a311ad83e7b0f97, type: 3}
+  m_Name: Wizard Stats
+  m_EditorClassIdentifier: 
+  enemyName: Ben
+  maxHealth: 100
+  speed: 2
+  fightingStyle: 0
+  fleeSpeed: -0.3
+  fleeRange: 6
+  timeBetweenChargeAndFireball: 1.5
+  damageIndicator: {fileID: 9211842529041911785, guid: 54ad2455f5b126445a05a45ab65b8761, type: 3}
+  primaryProjectilePrefab: {fileID: 7420190174224236576, guid: 80386e8cab0e2804f8c43f3c4d782ab7, type: 3}

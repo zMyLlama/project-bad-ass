@@ -10014,7 +10014,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 40}
   m_SizeDelta: {x: 0, y: 150}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &98482845
@@ -10055,7 +10055,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_HorizontalFit: 1
+  m_HorizontalFit: 2
   m_VerticalFit: 0
 --- !u!1 &138785735
 GameObject:
@@ -15255,7 +15255,7 @@ Transform:
   m_GameObject: {fileID: 372575493}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 7, y: 7, z: 7}
+  m_LocalScale: {x: 6, y: 6, z: 7}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 68693905}
@@ -15445,7 +15445,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 75.18, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 65}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &427380824
@@ -20484,7 +20484,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -20545,7 +20545,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: -0.008560017, y: -0.5164, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -21054,7 +21054,7 @@ PolygonCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 1.2}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -21066,11 +21066,10 @@ PolygonCollider2D:
   m_AutoTiling: 0
   m_Points:
     m_Paths:
-    - - {x: -8.846187, y: 5.6980886}
-      - {x: -8.955851, y: -0.24477386}
-      - {x: -9.04568, y: -6.2210627}
-      - {x: 8.970164, y: -6.147583}
-      - {x: 8.955235, y: 5.6591215}
+    - - {x: -8.920307, y: 5.9305677}
+      - {x: -8.992589, y: -4.968113}
+      - {x: 8.970164, y: -4.9588284}
+      - {x: 8.9326515, y: 5.836901}
 --- !u!1 &897004894
 GameObject:
   m_ObjectHideFlags: 0
@@ -24141,6 +24140,55 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 921261106}
   m_CullTransparentMesh: 1
+--- !u!1 &927255814
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 927255816}
+  - component: {fileID: 927255815}
+  m_Layer: 0
+  m_Name: Global Volume
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &927255815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 927255814}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: d6e2c49f431f47b45a28ad13e6113bc9, type: 2}
+--- !u!4 &927255816
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 927255814}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.49713492, y: -2.1705713, z: -4.0290837}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &934798569
 GameObject:
   m_ObjectHideFlags: 0
@@ -24415,20 +24463,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20483f0e4280e9245b23565949fe7e61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyType: 0
-  maxHealth: 50
-  Speed: 4
-  runSpeed: -0.6
-  HP: 5
-  runRange: 6
-  timeBetweenChargeAndFireball: 1.5
-  fightingStyle: 1
+  stats: {fileID: 11400000, guid: cde537c96a4ad74408fe668e510dedb9, type: 2}
   disableOnDeath:
   - {fileID: 1932183854}
   - {fileID: 977358848}
   mySprite: {fileID: 1932183856}
-  fireballPrefab: {fileID: 7420190174224236576, guid: 80386e8cab0e2804f8c43f3c4d782ab7, type: 3}
-  damageIndicator: {fileID: 9211842529041911785, guid: 54ad2455f5b126445a05a45ab65b8761, type: 3}
   enemyHUD: {fileID: 977358848}
   radialHealth: {fileID: 1337954272}
   explosionParticle: {fileID: 1331635094}
@@ -24585,8 +24624,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 204.9}
+  m_AnchoredPosition: {x: 2.5, y: 0}
+  m_SizeDelta: {x: 15, y: 250}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1094653838
 MonoBehaviour:
@@ -24608,8 +24647,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: ae99d937453348c41962c1583dea494c, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -24784,6 +24823,7 @@ MonoBehaviour:
   dashDetectionLayer:
     serializedVersion: 2
     m_Bits: 520
+  _isDashing: 0
 --- !u!4 &1191435860
 Transform:
   m_ObjectHideFlags: 0
@@ -24879,6 +24919,7 @@ MonoBehaviour:
   heart: {fileID: 4621109364335884006, guid: e4f2fcbbce0ac91479b07f7cba31b996, type: 3}
   shakeManager: {fileID: 2050031312}
   weaponAnimator: {fileID: 0}
+  globalVolume: {fileID: 927255815}
 --- !u!114 &1191435864
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24939,7 +24980,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 40}
   m_SizeDelta: {x: 320, y: 150}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1196140146
@@ -25002,7 +25043,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 40}
   m_SizeDelta: {x: 0, y: 150}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!1 &1233026984
@@ -39880,7 +39921,7 @@ TilemapRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: a6e4b5b6747093743b40d171930da9d3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -55191,37 +55232,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   label: ENEMIES LEFT
   enemiesHolder: {fileID: 1101262727}
---- !u!1 &2036472421
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2036472422}
-  m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2036472422
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2036472421}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -3.08, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 10
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2050031309
 GameObject:
   m_ObjectHideFlags: 0
@@ -55323,7 +55333,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d381861eb2c30841bbdb2402296b5e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  developmentMode: 0
+  developmentMode: 1
   orthographicGoToSize: 4.8
   welcomeMessage: THE DUNGEON
   screenCover: {fileID: 1110403790}
