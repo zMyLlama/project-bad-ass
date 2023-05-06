@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a87543b6ca100d846a311ad83e7b0f97, type: 3}
-  m_Name: Wizard Stats
+  m_Name: Turret Stats
   m_EditorClassIdentifier: 
-  enemyName: Ben
-  maxHealth: 100
-  speed: 3
-  fightingStyle: 1
+  enemyName: Gunnar
+  maxHealth: 30
+  speed: 0
+  fightingStyle: 0
   fleeSpeed: -0.3
   fleeRange: 6
-  minPrimaryAttackCooldown: 1
-  maxPrimaryAttackCooldown: 3
+  minPrimaryAttackCooldown: 6
+  maxPrimaryAttackCooldown: 10
   timeBetweenChargeAndFireball: 1.5
   damageIndicator: {fileID: 9211842529041911785, guid: 54ad2455f5b126445a05a45ab65b8761, type: 3}
-  primaryProjectilePrefab: {fileID: 7420190174224236576, guid: 80386e8cab0e2804f8c43f3c4d782ab7, type: 3}
+  primaryProjectilePrefab: {fileID: 7420190174224236576, guid: 2c14063a1b1a9814597a31dd90a46656, type: 3}

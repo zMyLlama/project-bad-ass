@@ -17,10 +17,11 @@ public class RoomController : MonoBehaviour
     Dictionary<int, int[]> _roomGivesAccessTo = new Dictionary<int, int[]>();
 
     private void Awake() {
-        _roomGivesAccessTo.Add(1, new int[] { 2, 3 }); /* Clearing room 1 gives access to room 2 and 3 */
+        _roomGivesAccessTo.Add(1, new int[] { 2, 3, 5 }); /* Clearing room 1 gives access to room 2 and 3 */
         _roomGivesAccessTo.Add(2, new int[] { 1, 4 });
         _roomGivesAccessTo.Add(3, new int[] { 1 });
         _roomGivesAccessTo.Add(4, new int[] { 2 });
+        _roomGivesAccessTo.Add(5, new int[] { 1 });
     }
 
     public void addAccessToRoom(GameObject room) {

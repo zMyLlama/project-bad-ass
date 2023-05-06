@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ce4d6ed5abbf9d44bb3196d26292296b, type: 3}
-  m_Name: Fireball
+  m_Name: Wizard Bullet
   m_EditorClassIdentifier: 
-  speed: 10
-  baseDamage: 2
-  scale: {x: 1, y: 1, z: 1}
-  target: {x: 0, y: 0, z: 0}
+  speed: 5
+  baseDamage: 4
+  scale: {x: 1.5, y: 1.5, z: 1.5}
+  target: {x: 1.3228592, y: 6.885176, z: 0}

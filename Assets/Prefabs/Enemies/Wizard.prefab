@@ -4823,6 +4823,7 @@ GameObject:
   - component: {fileID: 296274554221574524}
   - component: {fileID: 296274554221574526}
   - component: {fileID: 296274554221574525}
+  - component: {fileID: 2941758813645307492}
   - component: {fileID: 296274554221574527}
   - component: {fileID: 296274554221574520}
   m_Layer: 7
@@ -4886,8 +4887,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stats: {fileID: 11400000, guid: cde537c96a4ad74408fe668e510dedb9, type: 2}
-  timeBetweenChargeAndFireball: 1.5
-  fightingStyle: 1
+  primaryAttackEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2941758813645307492}
+        m_TargetAssemblyTypeName: BulletAttack, Assembly-CSharp
+        m_MethodName: LaunchAttack
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 296274554221574525}
+          m_ObjectArgumentAssemblyTypeName: EnemyController, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   disableOnDeath:
   - {fileID: 296274555252465162}
   - {fileID: 296274554293372708}
@@ -4897,6 +4911,22 @@ MonoBehaviour:
   explosionParticle: {fileID: 296274555049784498}
   chargeParticle: {fileID: 296274555059830509}
   hitParticle: {fileID: 296274553980088276}
+  _target: {fileID: 0}
+  _rippleFullscreen: {fileID: 0}
+  _shakeManager: {fileID: 0}
+  CD: 0
+--- !u!114 &2941758813645307492
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 296274554221574515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0edd99bc0754de48b2de69bf5dde2b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!61 &296274554221574527
 BoxCollider2D:
   m_ObjectHideFlags: 0

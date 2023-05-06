@@ -16,9 +16,12 @@ public class Fireball : MonoBehaviour
 
   private void Start() {
     transform.localScale = bulletSettings.scale / 2;
-    transform.DOScale(bulletSettings.scale, 0.5f).SetEase(Ease.OutBack);
+    transform.DOScale(bulletSettings.scale, 0.5f).SetEase(Ease.OutBack).OnComplete(() => 
+      transform.DOScale(bulletSettings.scale * 1.5f, 0.15f).SetLoops(-1, LoopType.Yoyo)
+    );
 
     direction = (bulletSettings.target - transform.position).normalized;
+    Destroy(gameObject, 5f);
   }
 
   private void Update()

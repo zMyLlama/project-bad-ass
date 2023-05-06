@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
@@ -9,6 +10,7 @@ public class EnemyController : MonoBehaviour
 {
     [Header("Object Reference")]
     public EnemyStats_Settings stats;
+    public UnityEvent primaryAttackEvent;
     [Header("Objects")]
     public GameObject[] disableOnDeath = new GameObject[ ]{};
     public SpriteRenderer mySprite;
@@ -19,9 +21,9 @@ public class EnemyController : MonoBehaviour
     public GameObject chargeParticle;
     public GameObject hitParticle;
 
-    Transform _target;
-    SpriteRenderer _rippleFullscreen; 
-    ShakeManager _shakeManager;
+    [HideInInspector] public Transform _target;
+    [HideInInspector] public SpriteRenderer _rippleFullscreen; 
+    [HideInInspector] public ShakeManager _shakeManager;
     Animator _animator;
     Rigidbody2D rb;
     Color originalColor;
@@ -34,6 +36,7 @@ public class EnemyController : MonoBehaviour
 
     void Start()
     {
+        timeUntilNextAttack = Random.Range(stats.minPrimaryAttackCooldown, stats.maxPrimaryAttackCooldown);
         rb = GetComponent<Rigidbody2D>();
         currentHealth = stats.maxHealth;
         originalColor = mySprite.color;
@@ -50,11 +53,19 @@ public class EnemyController : MonoBehaviour
         
         yield return new WaitForSeconds(stats.timeBetweenChargeAndFireball);
 
-        _shakeManager.addShakeWithPriority(4, 2, 0.2f, 10);
         chargeParticle.GetComponent<ParticleSystem>().Stop();
 
-        GameObject fireball = Instantiate(stats.primaryProjectilePrefab, transform.position, Quaternion.identity);
-        fireball.GetComponent<Fireball>().bulletSettings.target = _target.transform.position;
+        for (int i = 0; i < 15; i++)
+        {
+            _shakeManager.addShakeWithPriority(2, 1, 0.1f, 10);
+
+            primaryAttackEvent.Invoke();
+            GameObject fireball = Instantiate(stats.primaryProjectilePrefab, transform.position, Quaternion.identity);
+            fireball.GetComponent<Fireball>().bulletSettings.target = _target.transform.position;
+
+            yield return new WaitForSeconds(0.1f);
+        }
+
         CD = 0;
     }
 
@@ -62,8 +73,8 @@ public class EnemyController : MonoBehaviour
     float _knockbackForce;
     Vector2 _knockbackDirection; 
 
-    float CD = 0;
-    int timeUntilNextAttack = 5;
+    [HideInInspector] public float CD = 0;
+    float timeUntilNextAttack = 5;
     void Update()
     {
         if (dead) return;
@@ -74,22 +85,23 @@ public class EnemyController : MonoBehaviour
         {
             rb.AddForce(_knockbackDirection * (_knockbackForce * 80) * Time.deltaTime, ForceMode2D.Impulse);
             _knockbackTimer -= Time.deltaTime;
-            print(Time.deltaTime);
         }
 
         if (CD != -1 && _knockbackTimer <= 0)
             rb.velocity = direction * stats.speed;
 
-        if (stats.fleeRange > Vector3.Distance(transform.position, _target.position) && CD != -1) {
-            //rb.velocity = direction / runSpeed;
-        }
+        if (3f > Vector3.Distance(transform.position, _target.position) && CD != -1 && _knockbackTimer <= 0 && stats.fightingStyle == FightingStyles.Normal)
+            rb.velocity = (direction * stats.speed) * 0.5f;
+
+        if (stats.fleeRange > Vector3.Distance(transform.position, _target.position) && CD != -1 && _knockbackTimer <= 0 && stats.fightingStyle == FightingStyles.Coward)
+            rb.velocity = direction / stats.fleeSpeed;
 
         if (CD != -1) CD += Time.deltaTime;
         if(CD >= timeUntilNextAttack && CD != -1)
         {
             CD = -1;
-            timeUntilNextAttack = Random.Range(5, 10);
-            StartCoroutine("shootFireball");
+            timeUntilNextAttack = Random.Range(stats.minPrimaryAttackCooldown, stats.maxPrimaryAttackCooldown);
+            primaryAttackEvent.Invoke();
         }
     }
 
