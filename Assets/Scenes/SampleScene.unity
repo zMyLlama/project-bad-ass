@@ -24917,6 +24917,7 @@ MonoBehaviour:
   attackCooldown: 0.15
   heartsHolder: {fileID: 427380820}
   heart: {fileID: 4621109364335884006, guid: e4f2fcbbce0ac91479b07f7cba31b996, type: 3}
+  fullHeartSprite: {fileID: 1610687400, guid: f566a33d394d85a4b823dc136bda3f2b, type: 3}
   shakeManager: {fileID: 2050031312}
   weaponAnimator: {fileID: 0}
   globalVolume: {fileID: 927255815}

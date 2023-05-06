@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
+using DG.Tweening;
 
 public class Combat : MonoBehaviour
 {
     [Header("Health")]
     public int hearts = 5;
-    public float amountOfHeartStates = 4f;
+    public int amountOfHeartStates = 4;
     public Sprite[ ] heartStates = new Sprite[  ]{};
     [HideInInspector] public float health = 0;
 
@@ -23,51 +25,95 @@ public class Combat : MonoBehaviour
     [Header("Objects")]
     public GameObject heartsHolder;
     public GameObject heart;
+    public Sprite fullHeartSprite;
     public ShakeManager shakeManager;
     public Animator weaponAnimator;
     public Volume globalVolume;
+
+    private Vignette vignetteEffect;
+    private List<GameObject> heartObjects;
 
     float Remap(float value, float from1, float to1, float from2, float to2) {
         return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
     }
 
-    private void Start() {
-        health = hearts * amountOfHeartStates;
-        damagePlayer(0);
+    private void Awake() {
+        for (int i = 0; i < hearts; i++)
+        {
+            GameObject _heartClone = Instantiate(heart);
+            _heartClone.name = "Heart_" + i;
+            _heartClone.transform.SetParent(heartsHolder.transform);
+            _heartClone.transform.localScale = new Vector3(1, 1, 1);
+
+            heartObjects.Add(_heartClone);
+        }
     }
 
+    private void Start() {
+        health = hearts * amountOfHeartStates;
+
+        globalVolume.profile.TryGet(out vignetteEffect);
+    }
+
+    float _vignetteEffectForce = 0f;
+    int _damagedPulsingState = 0; /* 0 is off */
     void Update()
     {
         if (Input.GetMouseButtonDown(0)) {
             damagePlayer(1);
         }
+        if (Input.GetMouseButtonDown(1)) {
+            damagePlayer(-1);
+        }
+
+        if (health < (2 * amountOfHeartStates) && health > amountOfHeartStates && _damagedPulsingState != 1 && _vignetteEffectForce < 0.01f) {
+            _damagedPulsingState = 1;
+
+            DOTween.Kill("DamagedPulsingLeaving");
+            DOTween.Kill("DamagedPulsing");
+            DOTween.To(() => _vignetteEffectForce, x => _vignetteEffectForce = x, 0.5f, 1f).SetLoops(-1, LoopType.Yoyo).OnUpdate(() => vignetteEffect.intensity.value = _vignetteEffectForce).SetId("DamagedPulsing");
+        } else if (health <= amountOfHeartStates && _damagedPulsingState != 2 && _vignetteEffectForce < 0.01f) {
+            _damagedPulsingState = 2;
+
+            DOTween.Kill("DamagedPulsingLeaving");
+            DOTween.Kill("DamagedPulsing");
+            DOTween.To(() => _vignetteEffectForce, x => _vignetteEffectForce = x, 0.5f, 0.5f).SetLoops(-1, LoopType.Yoyo).OnUpdate(() => vignetteEffect.intensity.value = _vignetteEffectForce).SetId("DamagedPulsing");
+        } else if (health >= (2 * amountOfHeartStates) && _damagedPulsingState != 0) {
+            _damagedPulsingState = 0;
+
+            DOTween.Kill("DamagedPulsing");
+            DOTween.To(() => _vignetteEffectForce, x => _vignetteEffectForce = x, 0f, 1f).OnUpdate(() => vignetteEffect.intensity.value = _vignetteEffectForce).SetId("DamagedPulsingLeaving");
+        }
+    }
+
+    IEnumerator damagePostEffect() {
+        vignetteEffect.intensity.value = 0.5f;
+        yield return new WaitForSeconds(0.2f);
+        vignetteEffect.intensity.value = 0f;
     }
 
     public void damagePlayer(int amount) {
         health -= amount;
-        for (int i = 0; i < heartsHolder.transform.childCount; i++)
-        {
-            Destroy(heartsHolder.transform.GetChild(i).gameObject);
-        }
+        //StartCoroutine(damagePostEffect());
 
+        int totalIndex = 0;
         for (int i = 0; i < Mathf.Floor(health / amountOfHeartStates); i++)
         {
-            GameObject _heartClone = Instantiate(heart);
-            _heartClone.transform.SetParent(heartsHolder.transform);
-            _heartClone.transform.localScale = new Vector3(1, 1, 1);
+            GameObject _heartClone = heartsHolder.transform.GetChild(totalIndex).gameObject;
+            _heartClone.GetComponent<Image>().sprite = fullHeartSprite;
+            totalIndex++;
         }
         if (health % amountOfHeartStates != 0.0f) {
-            GameObject _heartClone = Instantiate(heart);
+            GameObject _heartClone = heartsHolder.transform.GetChild(totalIndex).gameObject;
             _heartClone.GetComponent<Image>().sprite = heartStates[Mathf.RoundToInt(health % amountOfHeartStates)];
-            _heartClone.transform.SetParent(heartsHolder.transform);
-            _heartClone.transform.localScale = new Vector3(1, 1, 1);
+            totalIndex++;
         }
         for (int i = 0; i < (hearts - Mathf.Ceil(health / amountOfHeartStates)); i++)
         {
-            GameObject _heartClone = Instantiate(heart);
+            if (!heartsHolder.transform.GetChild(totalIndex)) continue;
+            GameObject _heartClone = heartsHolder.transform.GetChild(totalIndex).gameObject;
             _heartClone.GetComponent<Image>().sprite = heartStates[0];
-            _heartClone.transform.SetParent(heartsHolder.transform);
-            _heartClone.transform.localScale = new Vector3(1, 1, 1);
+            totalIndex++;
         }
     }
 
