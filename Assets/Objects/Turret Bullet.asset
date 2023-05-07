@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Turret Bullet
   m_EditorClassIdentifier: 
   speed: 10
-  baseDamage: 1
+  baseDamage: 4
   scale: {x: 1, y: 1, z: 1}
-  target: {x: 0.49517345, y: -2.1472259, z: 0}
+  target: {x: -2.0000002, y: -4.1999984, z: 0}

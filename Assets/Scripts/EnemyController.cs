@@ -24,11 +24,12 @@ public class EnemyController : MonoBehaviour
     [HideInInspector] public Transform _target;
     [HideInInspector] public SpriteRenderer _rippleFullscreen; 
     [HideInInspector] public ShakeManager _shakeManager;
+    GameObject _worldCanvas;
     Animator _animator;
-    Rigidbody2D rb;
-    Color originalColor;
-    float currentHealth = 0.0f;
-    bool dead = false;
+    Rigidbody2D _rb;
+    Color _originalColor;
+    float _currentHealth = 0.0f;
+    bool _dead = false;
 
     float Remap(float value, float from1, float to1, float from2, float to2) {
         return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
@@ -37,11 +38,12 @@ public class EnemyController : MonoBehaviour
     void Start()
     {
         timeUntilNextAttack = Random.Range(stats.minPrimaryAttackCooldown, stats.maxPrimaryAttackCooldown);
-        rb = GetComponent<Rigidbody2D>();
-        currentHealth = stats.maxHealth;
-        originalColor = mySprite.color;
+        _rb = GetComponent<Rigidbody2D>();
+        _currentHealth = stats.maxHealth;
+        _originalColor = mySprite.color;
         _animator = GetComponent<Animator>();
-
+        
+        _worldCanvas = GameObject.FindGameObjectWithTag("World Canvas");
         _target = GameObject.FindGameObjectWithTag("Player").transform;
         _shakeManager = GameObject.FindGameObjectWithTag("Cinemachine").GetComponent<ShakeManager>();
         _rippleFullscreen = GameObject.FindGameObjectWithTag("Cinemachine").transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>();
@@ -77,24 +79,24 @@ public class EnemyController : MonoBehaviour
     float timeUntilNextAttack = 5;
     void Update()
     {
-        if (dead) return;
-        if (CD == -1) rb.velocity = new Vector2(0, 0);
+        if (_dead) return;
+        if (CD == -1) _rb.velocity = new Vector2(0, 0);
 
         Vector2 direction = (_target.position - transform.position).normalized;
         if (_knockbackTimer > 0)
         {
-            rb.AddForce(_knockbackDirection * (_knockbackForce * 80) * Time.deltaTime, ForceMode2D.Impulse);
+            _rb.AddForce(_knockbackDirection * (_knockbackForce * 80) * Time.deltaTime, ForceMode2D.Impulse);
             _knockbackTimer -= Time.deltaTime;
         }
 
         if (CD != -1 && _knockbackTimer <= 0)
-            rb.velocity = direction * stats.speed;
+            _rb.velocity = direction * stats.speed;
 
         if (3f > Vector3.Distance(transform.position, _target.position) && CD != -1 && _knockbackTimer <= 0 && stats.fightingStyle == FightingStyles.Normal)
-            rb.velocity = (direction * stats.speed) * 0.5f;
+            _rb.velocity = (direction * stats.speed) * 0.5f;
 
         if (stats.fleeRange > Vector3.Distance(transform.position, _target.position) && CD != -1 && _knockbackTimer <= 0 && stats.fightingStyle == FightingStyles.Coward)
-            rb.velocity = direction / stats.fleeSpeed;
+            _rb.velocity = direction / stats.fleeSpeed;
 
         if (CD != -1) CD += Time.deltaTime;
         if(CD >= timeUntilNextAttack && CD != -1)
@@ -108,7 +110,7 @@ public class EnemyController : MonoBehaviour
     IEnumerator flashWhite() {
         mySprite.color = Color.white;
         yield return new WaitForSeconds(0.2f);
-        mySprite.color = originalColor;
+        mySprite.color = _originalColor;
     }
 
     public void applyKnockback(Vector2 direction, float force, float duration) {
@@ -118,22 +120,22 @@ public class EnemyController : MonoBehaviour
     }
 
     public void takeDamage(float amount) {
-        if (dead) return;
-        float healthBeforeAppliedDamage = currentHealth;
+        if (_dead) return;
+        float healthBeforeAppliedDamage = _currentHealth;
 
-        currentHealth -= amount;
+        _currentHealth -= amount;
         StartCoroutine("flashWhite");
-        if (currentHealth <= 0) {
-            dead = true;
+        if (_currentHealth <= 0) {
+            _dead = true;
             Destroy(gameObject, 1f);
             gameObject.transform.SetParent(GameObject.FindGameObjectWithTag("Cleaner").transform);
-            currentHealth = 0;
+            _currentHealth = 0;
 
             _rippleFullscreen.material.SetFloat("_WaveDistanceFromCenter", -0.1f);
             _rippleFullscreen.material.DOFloat(1, "_WaveDistanceFromCenter", 1f).OnComplete(() => _rippleFullscreen.material.SetFloat("_WaveDistanceFromCenter", -0.1f));
 
             _shakeManager.addShakeWithPriority(6, 1, 0.2f, 2);
-            rb.constraints = RigidbodyConstraints2D.FreezeAll;
+            _rb.constraints = RigidbodyConstraints2D.FreezeAll;
             explosionParticle.GetComponent<ParticleSystem>().Play();
             for (int i = 0; i < disableOnDeath.Length; i++)
             {
@@ -142,18 +144,18 @@ public class EnemyController : MonoBehaviour
         } else {
             GameObject _damageIndicatorClone = Instantiate(stats.damageIndicator);
             Destroy(_damageIndicatorClone, 5f);
-            _damageIndicatorClone.transform.SetParent(enemyHUD.transform);
-            _damageIndicatorClone.GetComponent<TextMeshProUGUI>().text = "-" + (healthBeforeAppliedDamage - currentHealth).ToString("F2");
+            _damageIndicatorClone.transform.SetParent(_worldCanvas.transform);
+            _damageIndicatorClone.GetComponent<TextMeshProUGUI>().text = "-" + (healthBeforeAppliedDamage - _currentHealth).ToString("F2");
 
-            _damageIndicatorClone.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+            _damageIndicatorClone.GetComponent<RectTransform>().position = gameObject.transform.position;
             _damageIndicatorClone.transform.eulerAngles = new Vector3(0, 0, Random.Range(-20f, 20f));
-            _damageIndicatorClone.GetComponent<RectTransform>().DOAnchorPos(new Vector2(Random.Range(-1f, 1f), Random.Range(0.7f, 1.5f)), 0.5f).SetEase(Ease.OutBack);
+            _damageIndicatorClone.GetComponent<RectTransform>().DOMove(gameObject.transform.position + new Vector3(Random.Range(-1f, 1f), Random.Range(0.7f, 1.5f), 0), 0.5f).SetEase(Ease.OutBack);
             _damageIndicatorClone.GetComponent<TextMeshProUGUI>().DOFade(0, 0.5f).SetDelay(0.5f);
 
             _animator.Play("EnemyDamage");
             hitParticle.GetComponent<ParticleSystem>().Play();
         }
 
-        radialHealth.fillAmount = Remap(currentHealth, 0f, stats.maxHealth, 0f,  1f);
+        radialHealth.fillAmount = Remap(_currentHealth, 0f, stats.maxHealth, 0f,  1f);
     }
 }

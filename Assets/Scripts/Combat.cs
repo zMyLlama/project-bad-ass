@@ -23,11 +23,12 @@ public class Combat : MonoBehaviour
     public float attackCooldown = 0.15f;
 
     [Header("Objects")]
+    public GameObject deathCanvas;
+    public Image fade;
+    public RawImage skull;
     public GameObject heartsHolder;
     public GameObject heart;
-    public Sprite fullHeartSprite;
     public ShakeManager shakeManager;
-    public Animator weaponAnimator;
     public Volume globalVolume;
 
     private Vignette vignetteEffect;
@@ -86,21 +87,55 @@ public class Combat : MonoBehaviour
         }
     }
 
+    IEnumerator deathAnimation() {
+        shakeManager.killAllScreenshake();
+        shakeManager.preventFurtherScreenshake = true;
+
+        GameObject _canvas = GameObject.FindGameObjectWithTag("Canvas").gameObject;
+        _canvas.SetActive(false);
+        fade.DOFade(1, 0.25f);
+
+        yield return new WaitForSeconds(0.4f);
+
+        skull.gameObject.GetComponent<RectTransform>().position = gameObject.transform.position;
+        skull.gameObject.SetActive(true);
+
+        skull.DOFade(1, 0.3f);
+        skull.gameObject.GetComponent<RectTransform>().DOScale(new Vector3(0.01f, 0.01f, 1f), 0.35f).OnComplete(() => shakeManager.addShakeWithPriority(10, 3, 0.3f, 1000, true));
+
+        yield return new WaitForSeconds(1.4f);
+
+        shakeManager.addShakeWithPriority(5, 2, 0.2f, 1000, true);
+        skull.DOFade(0, 0.1f);
+        skull.transform.GetChild(0).GetComponent<ParticleSystem>().Play();
+
+        yield return new WaitForSeconds(1.5f);
+
+        deathCanvas.SetActive(true);
+        _canvas.SetActive(true);
+    }
+
     IEnumerator damagePostEffect() {
         vignetteEffect.intensity.value = 0.5f;
         yield return new WaitForSeconds(0.2f);
         vignetteEffect.intensity.value = 0f;
     }
 
+    bool _dead = false;
     public void damagePlayer(int amount) {
+        if (_dead) return;
+
         health -= amount;
-        //StartCoroutine(damagePostEffect());
+        if (health <= 0 && !_dead) {
+            _dead = true;
+            StartCoroutine(deathAnimation());
+        };
 
         int totalIndex = 0;
         for (int i = 0; i < Mathf.Floor(health / amountOfHeartStates); i++)
         {
             GameObject _heartClone = heartsHolder.transform.GetChild(totalIndex).gameObject;
-            _heartClone.GetComponent<Image>().sprite = fullHeartSprite;
+            _heartClone.GetComponent<Image>().sprite = heartStates[4];
             totalIndex++;
         }
         if (health % amountOfHeartStates != 0.0f) {

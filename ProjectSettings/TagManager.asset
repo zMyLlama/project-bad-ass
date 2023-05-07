@@ -10,6 +10,8 @@ TagManager:
   - HUD
   - Confiner
   - Enemies
+  - World Canvas
+  - Canvas
   layers:
   - Default
   - TransparentFX

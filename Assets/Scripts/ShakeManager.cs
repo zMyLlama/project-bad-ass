@@ -37,6 +37,7 @@ public class ShakeManager : MonoBehaviour {
     [SerializeField] bool logWarnings = true; 
     [ReadOnly] public float currentPlayingKey = -1f;
 
+    [HideInInspector] public bool preventFurtherScreenshake = false;
     Dictionary<int, float[]> shakePriorities = new Dictionary<int, float[]>();
     Coroutine currentPlayingShake = null;
     CinemachineVirtualCamera cinemachineVirtualCamera;
@@ -83,7 +84,9 @@ public class ShakeManager : MonoBehaviour {
         currentPlayingShake = StartCoroutine(playShake(_amplitude, _frequency, _durationComparedToCreationTime, largestKey));
     }
 
-    public void addShakeWithPriority(float amplitude, float frequency, float duration, int priority) {
+    public void addShakeWithPriority(float amplitude, float frequency, float duration, int priority, bool ignorePrevention = false) {
+        if (preventFurtherScreenshake && !ignorePrevention) return;
+
         if (priority < 0) {
             Debug.LogError("Failed at creating shake with priority. Priority must be a positive integer.");
             return;
@@ -101,5 +104,15 @@ public class ShakeManager : MonoBehaviour {
         
         shakePriorities.Add(priority, new float[] { amplitude, frequency, Time.time, duration });
         handleShakes();
+    }
+
+    public void killAllScreenshake() {
+        shakePriorities = new Dictionary<int, float[]>();
+        currentPlayingKey = -1;
+        if (currentPlayingShake != null) StopCoroutine(currentPlayingShake);
+        currentPlayingShake = null;
+
+        cinemachineVirtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_AmplitudeGain = 0;
+        cinemachineVirtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>().m_FrequencyGain = 0;
     }
 }

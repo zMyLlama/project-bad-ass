@@ -23,7 +23,6 @@ public class ExitHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         transform.GetChild(0).GetComponent<TextMeshProUGUI>().DOColor(new Color32(255, 255, 255, 255), 0.2f);
     }
 
-    //Detect when Cursor leaves the GameObject
     public void OnPointerExit(PointerEventData pointerEventData)
     {
         GetComponent<RectTransform>().DOScale(new Vector3(2f, 2f, 2f), 0.3f);

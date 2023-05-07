@@ -37,7 +37,6 @@ public class PlayHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         GetComponent<RectTransform>().DOScale(new Vector3(2.2f, 2.2f, 2.2f), 0.3f);
     }
 
-    //Detect when Cursor leaves the GameObject
     public void OnPointerExit(PointerEventData pointerEventData)
     {
         GetComponent<RectTransform>().DOScale(new Vector3(2f, 2f, 2f), 0.3f);
