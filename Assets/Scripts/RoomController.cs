@@ -13,10 +13,14 @@ public class RoomController : MonoBehaviour
     public List<GameObject> rooms = new List<GameObject>();
     [Header("Objects")]
     [SerializeField] GameObject _enemiesHolder;
+    [SerializeField] GameObject roomClearedFX;
 
     Dictionary<int, int[]> _roomGivesAccessTo = new Dictionary<int, int[]>();
+    ShakeManager _shakeManager;
 
     private void Awake() {
+        _shakeManager = GameObject.FindGameObjectWithTag("Cinemachine").GetComponent<ShakeManager>();
+
         _roomGivesAccessTo.Add(1, new int[] { 2, 3, 5 }); /* Clearing room 1 gives access to room 2 and 3 */
         _roomGivesAccessTo.Add(2, new int[] { 1, 4 });
         _roomGivesAccessTo.Add(3, new int[] { 1 });
@@ -48,11 +52,21 @@ public class RoomController : MonoBehaviour
     }
 
     int _lastAttemptedUnlockIndex = -1;
+    bool _clearedEffectPlayed = false;
     private void FixedUpdate() {
-        if (_enemiesHolder.transform.childCount != 0) return;
+        if (_enemiesHolder.transform.childCount == 0 && !_clearedEffectPlayed) {
+            _shakeManager.addShakeWithPriority(10, 2, 0.3f, 100);
+            roomClearedFX.GetComponent<ParticleSystem>().Play();
+            _clearedEffectPlayed = true;
+        }
+        if (_enemiesHolder.transform.childCount != 0) {
+            _clearedEffectPlayed = false;
+            return;
+        };
+
         if (_lastAttemptedUnlockIndex == currentlyInRoom) return;
         if (!_roomGivesAccessTo.ContainsKey(currentlyInRoom)) return;
-
+        
         Debug.Log("UNLOCK");
         foreach (int roomNumber in _roomGivesAccessTo[currentlyInRoom])
         {

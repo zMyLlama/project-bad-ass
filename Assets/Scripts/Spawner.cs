@@ -20,7 +20,7 @@ public class Spawner : MonoBehaviour
         _enemyClone.transform.localScale = new Vector2(0, 0);
         _enemyClone.transform.DOScale(new Vector2(1f, 1f), 0.6f).SetEase(Ease.OutBack).OnComplete(() => _enemyClone.GetComponent<Animator>().enabled = true);
 
-        GameObject _spawnCloud = Instantiate(Resources.Load("EnemySpawnFX", typeof(GameObject)), gameObject.transform.position, Quaternion.identity) as GameObject;
+        GameObject _spawnCloud = Instantiate(Resources.Load("EnemySpawnFXV2", typeof(GameObject)), gameObject.transform.position, Quaternion.identity) as GameObject;
         _spawnCloud.transform.SetParent(GameObject.FindGameObjectWithTag("Cleaner").transform, true);
         Destroy(_spawnCloud, 1.5f);
 
