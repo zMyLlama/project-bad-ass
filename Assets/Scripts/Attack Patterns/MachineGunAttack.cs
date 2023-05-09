@@ -27,7 +27,15 @@ public class MachineGunAttack : MonoBehaviour
                 sender._shakeManager.addShakeWithPriority(2, 1, 0.1f, 10);
 
                 GameObject fireball = Instantiate(sender.stats.primaryProjectilePrefab, transform.position, Quaternion.identity);
-                fireball.transform.right = sender._target.position - transform.position;
+
+                GameObject SFX = Instantiate(Resources.Load("SFX/EnemyShootAudio", typeof(GameObject)), transform.position, Quaternion.identity) as GameObject;
+                SFX.transform.SetParent(GameObject.FindGameObjectWithTag("Cleaner").gameObject.transform);
+                Destroy(SFX, 1f);
+
+
+                Vector2 _toPosition = sender._target.position;
+                Vector2 _fromPosition = transform.position;
+                fireball.transform.right = _toPosition - _fromPosition;
                 fireball.GetComponent<Fireball>().bulletSettings.target = sender._target.transform.position;
 
                 yield return new WaitForSeconds(Remap(i, 0, bulletsAmount, timeBetweenEachShot, timeBetweenEachShot * 2));

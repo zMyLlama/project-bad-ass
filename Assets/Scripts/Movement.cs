@@ -34,10 +34,16 @@ public class Movement : MonoBehaviour
     private IEnumerator WalkLoop() {
         while (true)
         {
+            GameObject SFX = Instantiate(Resources.Load("SFX/FootstepAudio_1", typeof(GameObject)), transform.position, Quaternion.identity) as GameObject;
+            SFX.GetComponent<AudioSource>().pitch = Random.Range(1f, 2f);
+            SFX.transform.SetParent(GameObject.FindGameObjectWithTag("Cleaner").gameObject.transform);
+            Destroy(SFX, 1f);
+
             GameObject _dustCloudClone = Instantiate(dustCloud, feetLocation.position, Quaternion.identity);
             _dustCloudClone.transform.rotation = Quaternion.Euler(0, 0, Random.Range(-180f, 180f));
             _dustCloudClone.transform.localScale = new Vector3(Random.Range(4f, 6f), Random.Range(4, 6f), 1);
             Destroy(_dustCloudClone, 0.5f);
+
             yield return new WaitForSeconds(0.3f);
         }
     }
@@ -51,13 +57,23 @@ public class Movement : MonoBehaviour
         _spriteClone.GetComponent<SpriteRenderer>().DOFade(0, 0.5f);
     }
 
+    private void dashSFX() {
+        GameObject SFX = Instantiate(Resources.Load("SFX/FootstepAudio_1", typeof(GameObject)), transform.position, Quaternion.identity) as GameObject;
+        SFX.GetComponent<AudioSource>().pitch = Random.Range(1f, 2f);
+        SFX.transform.SetParent(GameObject.FindGameObjectWithTag("Cleaner").gameObject.transform);
+        Destroy(SFX, 1f);
+    }
+
     private IEnumerator flashStep(Vector2 start, Vector2 end) {
         shakeManager.addShakeWithPriority(3, 2, 0.1f, 9);
         makeSpriteClone(Vector2.Lerp(start, end, 0));
+        dashSFX();
         yield return new WaitForSeconds(0.15f / 3f);
         makeSpriteClone(Vector2.Lerp(start, end, 0.33f));
+        dashSFX();
         yield return new WaitForSeconds(0.15f / 3f);
         makeSpriteClone(Vector2.Lerp(start, end, 0.66f));
+        dashSFX();
     }
 
     Coroutine _dashEnableRoutine = null;

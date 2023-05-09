@@ -24,6 +24,11 @@ public class Spawner : MonoBehaviour
         _spawnCloud.transform.SetParent(GameObject.FindGameObjectWithTag("Cleaner").transform, true);
         Destroy(_spawnCloud, 1.5f);
 
+        GameObject SFX = Instantiate(Resources.Load("SFX/EnemySpawnAudio", typeof(GameObject)), transform.position, Quaternion.identity) as GameObject;
+        SFX.GetComponent<AudioSource>().pitch = Random.Range(0.7f, 1.3f);
+        SFX.transform.SetParent(GameObject.FindGameObjectWithTag("Cleaner").gameObject.transform);
+        Destroy(SFX, 1f);
+
         GameObject.FindGameObjectWithTag("Cinemachine").GetComponent<ShakeManager>().addShakeWithPriority(0.5f, 1, 0.2f, 1);
     }
 

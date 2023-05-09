@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce4d6ed5abbf9d44bb3196d26292296b, type: 3}
   m_Name: Wizard Bullet
   m_EditorClassIdentifier: 
-  speed: 5
+  speed: 3
   baseDamage: 4
   scale: {x: 1.5, y: 1.5, z: 1.5}
-  target: {x: 1.3228592, y: 6.885176, z: 0}
+  target: {x: -6.3350186, y: 0.3200001, z: 0}

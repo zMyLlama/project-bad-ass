@@ -24,6 +24,11 @@ public class ShotgunAttack : MonoBehaviour
             sender.chargeParticle.GetComponent<ParticleSystem>().Stop();
 
             sender._shakeManager.addShakeWithPriority(6, 2, 0.1f, 12);
+
+            GameObject SFX = Instantiate(Resources.Load("SFX/EnemyShootAudio", typeof(GameObject)), transform.position, Quaternion.identity) as GameObject;
+            SFX.transform.SetParent(GameObject.FindGameObjectWithTag("Cleaner").gameObject.transform);
+            Destroy(SFX, 1f);
+
             for (int i = 0; i < bulletsAmount; i++)
             {
 

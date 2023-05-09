@@ -21,6 +21,10 @@ public class BulletAttack : MonoBehaviour
             fireball.transform.DORotate(new Vector3(0, 0, 360f), 0.6f, RotateMode.FastBeyond360).SetEase(Ease.Linear).SetLoops(-1, LoopType.Incremental);
             fireball.GetComponent<Fireball>().bulletSettings.target = sender._target.transform.position;
 
+            GameObject SFX = Instantiate(Resources.Load("SFX/EnemyShootAudio", typeof(GameObject)), transform.position, Quaternion.identity) as GameObject;
+            SFX.transform.SetParent(GameObject.FindGameObjectWithTag("Cleaner").gameObject.transform);
+            Destroy(SFX, 1f);
+
             sender.CD = 0;
         }
 

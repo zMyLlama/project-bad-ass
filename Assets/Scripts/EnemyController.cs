@@ -121,7 +121,12 @@ public class EnemyController : MonoBehaviour
 
     public void takeDamage(float amount) {
         if (_dead) return;
+
         float healthBeforeAppliedDamage = _currentHealth;
+        GameObject SFX = Instantiate(Resources.Load("SFX/EnemyHitAudio", typeof(GameObject)), transform.position, Quaternion.identity) as GameObject;
+        SFX.GetComponent<AudioSource>().pitch = Random.Range(1f, 2f);
+        SFX.transform.SetParent(GameObject.FindGameObjectWithTag("Cleaner").gameObject.transform);
+        Destroy(SFX, 1f);
 
         _currentHealth -= amount;
         StartCoroutine("flashWhite");
