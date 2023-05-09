@@ -18,8 +18,8 @@ MonoBehaviour:
   fightingStyle: 0
   fleeSpeed: -0.3
   fleeRange: 6
-  minPrimaryAttackCooldown: 1
-  maxPrimaryAttackCooldown: 2
+  minPrimaryAttackCooldown: 7
+  maxPrimaryAttackCooldown: 10
   timeBetweenChargeAndFireball: 1.5
   damageIndicator: {fileID: 9211842529041911785, guid: 54ad2455f5b126445a05a45ab65b8761, type: 3}
   primaryProjectilePrefab: {fileID: 7420190174224236576, guid: 2c14063a1b1a9814597a31dd90a46656, type: 3}

@@ -23,7 +23,7 @@ public class PlayHandler : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
             clip.Play();
         }
 
-        yield return new WaitForSeconds(6.5f);
+        yield return new WaitForSeconds(10f);
         SceneManager.LoadScene(1, LoadSceneMode.Single);
     }
 

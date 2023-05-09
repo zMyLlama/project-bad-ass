@@ -62,7 +62,7 @@ public class Startup : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
 
         welcomeText.DOFade(0, 1f).SetEase(Ease.OutCirc);
-        welcomeText.GetComponent<RectTransform>().DOAnchorPosY(100f, 2f).SetEase(Ease.OutCirc);
+        welcomeText.GetComponent<RectTransform>().DOAnchorPosY(100f, 2f).SetEase(Ease.InOutCirc);
     }
 
     private void Awake() {
