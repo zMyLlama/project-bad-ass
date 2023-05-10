@@ -5,24 +5,31 @@ using UnityEngine.UI;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using DG.Tweening;
+using Sirenix.OdinInspector;
 
 public class Combat : MonoBehaviour
 {
-    [Header("Health")]
-    public int hearts = 5;
-    public int amountOfHeartStates = 4;
+    [TitleGroup("Health", "Manage the health settings of the player", TitleAlignments.Centered, BoldTitle = true)]
+    [TabGroup("Health/Objects", "Heart Objects")] [PropertyOrder(1)]
     public Sprite[ ] heartStates = new Sprite[  ]{};
-    [HideInInspector] public float health = 0;
+    [TabGroup("Health/Objects", "Health Settings")] [PropertyOrder(0)]
+    public int hearts = 5;
+    [TabGroup("Health/Objects", "Health Settings")] [PropertyOrder(0)]
+    public int amountOfHeartStates = 4;
+    [PropertySpace(10)] [InfoBox("Following values are only read for debug purposes.")]
+    [TabGroup("Health/Objects", "Health Settings")] [PropertyOrder(0)] [ReadOnly]
+    public float health = 0;
+    [TabGroup("Health/Objects", "Health Settings")] [PropertyOrder(0)] [ShowIf("@this._dead == true")] [ReadOnly]
+    public bool _dead = false;
 
-    [Header("Attack stats")]
-    [Range(0.2f, 5f)] public float slowestAttackSpeed = 2f;
-    [Range(0.2f, 5f)] public float fastestAttackSpeed = 0.2f;
-    [Range(0.2f, 5f)] public float currentSwordAttackSpeed = 0.2f;
-    public float maxiumumDamage = 12.5f;
-    public float minimumDamage = 5f;
-    public float attackCooldown = 0.15f;
+    [TitleGroup("Attack", "Manage the attack settings of the player", TitleAlignments.Centered, BoldTitle = true)]
+    [HorizontalGroup("Attack/AttackSpeedSplit", MarginRight = 50)] [Range(0.2f, 4f)] public float slowestAttackSpeed = 2f;
+    [HorizontalGroup("Attack/AttackSpeedSplit")] [Range(0.2f, 4f)] public float fastestAttackSpeed = 0.2f;
+    [MinMaxSlider(0f, 50f, true)] public Vector2 minMaxDamage = new Vector2(5f, 12.5f);
+    [PropertySpace(10)] [InfoBox("Following values are only read for debug purposes.")]
+    [ReadOnly] public float currentSwordAttackSpeed = 0.2f;
 
-    [Header("Objects")]
+    [TitleGroup("Objects", "All external references to objects", TitleAlignments.Centered, BoldTitle = true)]
     public GameObject deathCanvas;
     public Image fade;
     public RawImage skull;
@@ -121,7 +128,6 @@ public class Combat : MonoBehaviour
         vignetteEffect.intensity.value = 0f;
     }
 
-    bool _dead = false;
     public void damagePlayer(int amount) {
         if (_dead) return;
 
@@ -157,7 +163,7 @@ public class Combat : MonoBehaviour
         Vector2 _direction = (other.gameObject.transform.position - transform.position).normalized;
         other.gameObject.GetComponent<EnemyController>().applyKnockback(_direction, 2f, 0.1f);
 
-        other.gameObject.GetComponent<EnemyController>().takeDamage(Remap(currentSwordAttackSpeed, fastestAttackSpeed, slowestAttackSpeed, maxiumumDamage, minimumDamage));
+        other.gameObject.GetComponent<EnemyController>().takeDamage(Remap(currentSwordAttackSpeed, fastestAttackSpeed, slowestAttackSpeed, minMaxDamage.y, minMaxDamage.x));
         shakeManager.addShakeWithPriority(2, 1, 0.1f, 1);
     }
 }

@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Sirenix.OdinInspector;
 
 public class Spawner : MonoBehaviour
 {
     [Header("Settings")]
+    [InlineEditor(InlineEditorModes.FullEditor)]
     [SerializeField] GameObject enemyToSpawn;
 
     IEnumerator instantiateEnemy() {

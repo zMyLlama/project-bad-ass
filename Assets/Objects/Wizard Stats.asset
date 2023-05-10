@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a87543b6ca100d846a311ad83e7b0f97, type: 3}
   m_Name: Wizard Stats
   m_EditorClassIdentifier: 
-  enemyName: Ben
   maxHealth: 100
   speed: 3
-  fightingStyle: 1
+  movementStyle: 0
+  fightingStyle: 2
   fleeSpeed: -0.3
   fleeRange: 6
   minPrimaryAttackCooldown: 2

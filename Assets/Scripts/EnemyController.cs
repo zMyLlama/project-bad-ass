@@ -5,17 +5,19 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
+using Sirenix.OdinInspector;
 
 public class EnemyController : MonoBehaviour
 {
     [Header("Object Reference")]
+    [InlineEditor(InlineEditorModes.FullEditor)]
     public EnemyStats_Settings stats;
     public UnityEvent primaryAttackEvent;
     [Header("Objects")]
     public GameObject[] disableOnDeath = new GameObject[ ]{};
-    public SpriteRenderer mySprite;
-    public GameObject enemyHUD;
-    public Image radialHealth;
+    [ChildGameObjectsOnly(IncludeSelf = false)] public SpriteRenderer mySprite;
+    [ChildGameObjectsOnly(IncludeSelf = false)] public Canvas enemyHUD;
+    [ChildGameObjectsOnly(IncludeSelf = false)] public Image radialHealth;
     [Header("Particles")]
     public GameObject explosionParticle;
     public GameObject chargeParticle;

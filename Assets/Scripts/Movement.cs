@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Sirenix.OdinInspector;
 
-public class Movement : MonoBehaviour
+public class Movement : SerializedMonoBehaviour
 {
     #region Public Variables
     [Header("Velocities")]

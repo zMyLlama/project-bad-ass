@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DaggerGoblinMove : MonoBehaviour
 {
-    //Det her er scriptet til slangen, vi ændrede hvad det skulle være efter jeg oprettelse af filen.
+    //Det her er scriptet til slangen, vi ï¿½ndrede hvad det skulle vï¿½re efter jeg oprettelse af filen.
 
 
     public int Speed;
@@ -27,7 +27,7 @@ public class DaggerGoblinMove : MonoBehaviour
 
         currentTarget = Player;
 
-        //her indlæser jeg rigidbodyen og sætter gå hastighed of liv.
+        //her indlï¿½ser jeg rigidbodyen og sï¿½tter gï¿½ hastighed of liv.
     }
 
     // Update is called once per frame

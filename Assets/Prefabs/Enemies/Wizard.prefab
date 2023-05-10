@@ -4906,7 +4906,7 @@ MonoBehaviour:
   - {fileID: 296274555252465162}
   - {fileID: 296274554293372708}
   mySprite: {fileID: 296274555252465172}
-  enemyHUD: {fileID: 296274554293372708}
+  enemyHUD: {fileID: 296274554293372704}
   radialHealth: {fileID: 296274555043453124}
   explosionParticle: {fileID: 296274555049784498}
   chargeParticle: {fileID: 296274555059830509}
