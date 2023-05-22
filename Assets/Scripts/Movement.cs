@@ -7,6 +7,9 @@ using Sirenix.OdinInspector;
 public class Movement : SerializedMonoBehaviour
 {
     #region Public Variables
+    [Header("Settings")]
+    [SerializeField] float _dashCooldown = 1f;
+
     [Header("Velocities")]
     public float xVelocity = 0f;
     public float yVelocity = 0f;
@@ -28,6 +31,7 @@ public class Movement : SerializedMonoBehaviour
     #region Private Variables
     Rigidbody2D _rb;
     Dictionary<int, string> representingAnimationNames = new Dictionary<int, string>();
+    float _timeOnLastDash = 0;
     [HideInInspector] public bool _isDashing = false;
     #endregion
 
@@ -104,6 +108,9 @@ public class Movement : SerializedMonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space)) {
+            if (Time.time - _timeOnLastDash < _dashCooldown) return;
+            _timeOnLastDash = Time.time;
+
             Vector2 _currentRBVelocity = _rb.velocity;
             if (_currentRBVelocity == new Vector2(0, 0)) _currentRBVelocity = new Vector2(0, representingMovementVelocities[2]);
 

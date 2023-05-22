@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 30
   speed: 0
+  movementStyle: 0
   fightingStyle: 2
   fleeSpeed: -0.3
   fleeRange: 6

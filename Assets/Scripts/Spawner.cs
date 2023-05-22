@@ -34,7 +34,16 @@ public class Spawner : MonoBehaviour
         GameObject.FindGameObjectWithTag("Cinemachine").GetComponent<ShakeManager>().addShakeWithPriority(0.5f, 1, 0.2f, 1);
     }
 
+    private void Awake() {
+        this.gameObject.SetActive(false);
+    }
+
     private void Start() {
         StartCoroutine("instantiateEnemy");
+    }
+
+    private void OnDrawGizmos() {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, 0.25f);
     }
 }

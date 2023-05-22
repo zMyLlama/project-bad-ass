@@ -37,7 +37,7 @@ public class Fireball : MonoBehaviour
     }
     if (other.gameObject.GetComponent<Movement>()._isDashing) return;
     
-    other.gameObject.GetComponent<Combat>().damagePlayer(bulletSettings.baseDamage);
+    other.gameObject.GetComponent<Combat>().DamagePlayer(bulletSettings.baseDamage);
     Destroy(gameObject);
   }
 }

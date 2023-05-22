@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 using Sirenix.OdinInspector;
+using UnityEngine.Serialization;
 
 public class EnemyController : MonoBehaviour
 {
@@ -23,9 +24,9 @@ public class EnemyController : MonoBehaviour
     public GameObject chargeParticle;
     public GameObject hitParticle;
 
-    [HideInInspector] public Transform _target;
-    [HideInInspector] public SpriteRenderer _rippleFullscreen; 
-    [HideInInspector] public ShakeManager _shakeManager;
+    [HideInInspector] public Transform target;
+    [HideInInspector] public SpriteRenderer rippleFullscreen; 
+    [HideInInspector] public ShakeManager shakeManager;
     GameObject _worldCanvas;
     Animator _animator;
     Rigidbody2D _rb;
@@ -39,20 +40,20 @@ public class EnemyController : MonoBehaviour
 
     void Start()
     {
-        timeUntilNextAttack = Random.Range(stats.minPrimaryAttackCooldown, stats.maxPrimaryAttackCooldown);
+        _timeUntilNextAttack = Random.Range(stats.minPrimaryAttackCooldown, stats.maxPrimaryAttackCooldown);
         _rb = GetComponent<Rigidbody2D>();
         _currentHealth = stats.maxHealth;
         _originalColor = mySprite.color;
         _animator = GetComponent<Animator>();
         
         _worldCanvas = GameObject.FindGameObjectWithTag("World Canvas");
-        _target = GameObject.FindGameObjectWithTag("Player").transform;
-        _shakeManager = GameObject.FindGameObjectWithTag("Cinemachine").GetComponent<ShakeManager>();
-        _rippleFullscreen = GameObject.FindGameObjectWithTag("Cinemachine").transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>();
+        target = GameObject.FindGameObjectWithTag("Player").transform;
+        shakeManager = GameObject.FindGameObjectWithTag("Cinemachine").GetComponent<ShakeManager>();
+        rippleFullscreen = GameObject.FindGameObjectWithTag("Cinemachine").transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>();
     }
 
-    IEnumerator shootFireball() {
-        _shakeManager.addShakeWithPriority(1, 1, stats.timeBetweenChargeAndFireball, 1);
+    private IEnumerator ShootFireball() {
+        shakeManager.addShakeWithPriority(1, 1, stats.timeBetweenChargeAndFireball, 1);
         chargeParticle.GetComponent<ParticleSystem>().Play();
         
         yield return new WaitForSeconds(stats.timeBetweenChargeAndFireball);
@@ -61,87 +62,87 @@ public class EnemyController : MonoBehaviour
 
         for (int i = 0; i < 15; i++)
         {
-            _shakeManager.addShakeWithPriority(2, 1, 0.1f, 10);
+            shakeManager.addShakeWithPriority(2, 1, 0.1f, 10);
 
             primaryAttackEvent.Invoke();
             GameObject fireball = Instantiate(stats.primaryProjectilePrefab, transform.position, Quaternion.identity);
-            fireball.GetComponent<Fireball>().bulletSettings.target = _target.transform.position;
+            fireball.GetComponent<Fireball>().bulletSettings.target = target.transform.position;
 
             yield return new WaitForSeconds(0.1f);
         }
 
-        CD = 0;
+        cd = 0;
     }
 
-    float _knockbackTimer = 0;
-    float _knockbackForce;
-    Vector2 _knockbackDirection; 
+    private float _knockbackTimer = 0;
+    private float _knockbackForce;
+    private Vector2 _knockbackDirection; 
 
-    [HideInInspector] public float CD = 0;
-    float timeUntilNextAttack = 5;
+    [HideInInspector] public float cd = 0;
+    float _timeUntilNextAttack = 5;
     void Update()
     {
         if (_dead) return;
-        if (CD == -1) _rb.velocity = new Vector2(0, 0);
+        if (cd == -1) _rb.velocity = new Vector2(0, 0);
 
-        Vector2 direction = (_target.position - transform.position).normalized;
+        Vector2 direction = (target.position - transform.position).normalized;
         if (_knockbackTimer > 0)
         {
             _rb.AddForce(_knockbackDirection * (_knockbackForce * 80) * Time.deltaTime, ForceMode2D.Impulse);
             _knockbackTimer -= Time.deltaTime;
         }
 
-        if (CD != -1 && _knockbackTimer <= 0)
+        if (cd != -1 && _knockbackTimer <= 0)
             _rb.velocity = direction * stats.speed;
 
-        if (3f > Vector3.Distance(transform.position, _target.position) && CD != -1 && _knockbackTimer <= 0 && stats.fightingStyle == FightingStyles.Normal)
-            _rb.velocity = (direction * stats.speed) * 0.5f;
+        if (3f > Vector3.Distance(transform.position, target.position) && cd != -1 && _knockbackTimer <= 0 && stats.fightingStyle == FightingStyles.Normal)
+            _rb.velocity = direction * (stats.speed * 0.5f);
 
-        if (stats.fleeRange > Vector3.Distance(transform.position, _target.position) && CD != -1 && _knockbackTimer <= 0 && stats.fightingStyle == FightingStyles.Coward)
+        if (stats.fleeRange > Vector3.Distance(transform.position, target.position) && cd != -1 && _knockbackTimer <= 0 && stats.fightingStyle == FightingStyles.Coward)
             _rb.velocity = direction / stats.fleeSpeed;
 
-        if (CD != -1) CD += Time.deltaTime;
-        if(CD >= timeUntilNextAttack && CD != -1)
+        if (cd != -1) cd += Time.deltaTime;
+        if(cd >= _timeUntilNextAttack && cd != -1)
         {
-            CD = -1;
-            timeUntilNextAttack = Random.Range(stats.minPrimaryAttackCooldown, stats.maxPrimaryAttackCooldown);
+            cd = -1;
+            _timeUntilNextAttack = Random.Range(stats.minPrimaryAttackCooldown, stats.maxPrimaryAttackCooldown);
             primaryAttackEvent.Invoke();
         }
     }
 
-    IEnumerator flashWhite() {
+    IEnumerator FlashWhite() {
         mySprite.color = Color.white;
         yield return new WaitForSeconds(0.2f);
         mySprite.color = _originalColor;
     }
 
-    public void applyKnockback(Vector2 direction, float force, float duration) {
+    public void ApplyKnockback(Vector2 direction, float force, float duration) {
         _knockbackDirection = direction;
         _knockbackForce = force;
         _knockbackTimer = duration;
     }
 
-    public void takeDamage(float amount) {
+    public void TakeDamage(float amount) {
         if (_dead) return;
 
         float healthBeforeAppliedDamage = _currentHealth;
-        GameObject SFX = Instantiate(Resources.Load("SFX/EnemyHitAudio", typeof(GameObject)), transform.position, Quaternion.identity) as GameObject;
-        SFX.GetComponent<AudioSource>().pitch = Random.Range(1f, 2f);
-        SFX.transform.SetParent(GameObject.FindGameObjectWithTag("Cleaner").gameObject.transform);
-        Destroy(SFX, 1f);
+        GameObject sfx = Instantiate(Resources.Load("SFX/EnemyHitAudio", typeof(GameObject)), transform.position, Quaternion.identity) as GameObject;
+        sfx.GetComponent<AudioSource>().pitch = Random.Range(1f, 2f);
+        sfx.transform.SetParent(GameObject.FindGameObjectWithTag("Cleaner").gameObject.transform);
+        Destroy(sfx, 1f);
 
         _currentHealth -= amount;
-        StartCoroutine("flashWhite");
+        StartCoroutine("FlashWhite");
         if (_currentHealth <= 0) {
             _dead = true;
             Destroy(gameObject, 1f);
             gameObject.transform.SetParent(GameObject.FindGameObjectWithTag("Cleaner").transform);
             _currentHealth = 0;
 
-            _rippleFullscreen.material.SetFloat("_WaveDistanceFromCenter", -0.1f);
-            _rippleFullscreen.material.DOFloat(1, "_WaveDistanceFromCenter", 1f).OnComplete(() => _rippleFullscreen.material.SetFloat("_WaveDistanceFromCenter", -0.1f));
+            rippleFullscreen.material.SetFloat("_WaveDistanceFromCenter", -0.1f);
+            rippleFullscreen.material.DOFloat(1, "_WaveDistanceFromCenter", 1f).OnComplete(() => rippleFullscreen.material.SetFloat("_WaveDistanceFromCenter", -0.1f));
 
-            _shakeManager.addShakeWithPriority(6, 1, 0.2f, 2);
+            shakeManager.addShakeWithPriority(6, 1, 0.2f, 2);
             _rb.constraints = RigidbodyConstraints2D.FreezeAll;
             explosionParticle.GetComponent<ParticleSystem>().Play();
             for (int i = 0; i < disableOnDeath.Length; i++)
@@ -149,15 +150,14 @@ public class EnemyController : MonoBehaviour
                 disableOnDeath[i].SetActive(false);
             }
         } else {
-            GameObject _damageIndicatorClone = Instantiate(stats.damageIndicator);
-            Destroy(_damageIndicatorClone, 5f);
-            _damageIndicatorClone.transform.SetParent(_worldCanvas.transform);
-            _damageIndicatorClone.GetComponent<TextMeshProUGUI>().text = "-" + (healthBeforeAppliedDamage - _currentHealth).ToString("F2");
+            GameObject damageIndicatorClone = Instantiate(stats.damageIndicator, _worldCanvas.transform, true);
+            Destroy(damageIndicatorClone, 5f);
+            damageIndicatorClone.GetComponent<TextMeshProUGUI>().text = "-" + (healthBeforeAppliedDamage - _currentHealth).ToString("F2");
 
-            _damageIndicatorClone.GetComponent<RectTransform>().position = gameObject.transform.position;
-            _damageIndicatorClone.transform.eulerAngles = new Vector3(0, 0, Random.Range(-20f, 20f));
-            _damageIndicatorClone.GetComponent<RectTransform>().DOMove(gameObject.transform.position + new Vector3(Random.Range(-1f, 1f), Random.Range(0.7f, 1.5f), 0), 0.5f).SetEase(Ease.OutBack);
-            _damageIndicatorClone.GetComponent<TextMeshProUGUI>().DOFade(0, 0.5f).SetDelay(0.5f);
+            damageIndicatorClone.GetComponent<RectTransform>().position = gameObject.transform.position;
+            damageIndicatorClone.transform.eulerAngles = new Vector3(0, 0, Random.Range(-20f, 20f));
+            damageIndicatorClone.GetComponent<RectTransform>().DOMove(gameObject.transform.position + new Vector3(Random.Range(-1f, 1f), Random.Range(0.7f, 1.5f), 0), 0.5f).SetEase(Ease.OutBack);
+            damageIndicatorClone.GetComponent<TextMeshProUGUI>().DOFade(0, 0.5f).SetDelay(0.5f);
 
             _animator.Play("EnemyDamage");
             hitParticle.GetComponent<ParticleSystem>().Play();

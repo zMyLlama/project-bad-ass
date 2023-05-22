@@ -7,6 +7,6 @@ public class WeaponCollision : MonoBehaviour
     [SerializeField] Combat combat;
 
     private void OnTriggerEnter2D(Collider2D other) {
-        combat.swordCollisionEvent(other);
+        combat.SwordCollisionEvent(other);
     }
 }

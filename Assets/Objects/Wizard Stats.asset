@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Wizard Stats
   m_EditorClassIdentifier: 
   maxHealth: 100
-  speed: 3
+  speed: 1
   movementStyle: 0
-  fightingStyle: 2
+  fightingStyle: 1
   fleeSpeed: -0.3
   fleeRange: 6
   minPrimaryAttackCooldown: 2

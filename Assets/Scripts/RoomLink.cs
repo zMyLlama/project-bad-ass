@@ -47,4 +47,16 @@ public class RoomLink : MonoBehaviour
 
         StartCoroutine("handleRoomSwitch");
     }
+
+    private void OnDrawGizmos() {
+        //if (UnityEditor.Selection.activeGameObject != this.gameObject && UnityEditor.Selection.activeGameObject != this.transform.parent.gameObject) return;
+
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLine(transform.position, goTo);
+        Gizmos.DrawCube(linksTo.transform.position, new Vector3(0.75f, 0.75f, 0.75f));
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawCube(this.transform.parent.position, new Vector3(1f, 1f, 1f));
+        Gizmos.DrawWireSphere(goTo, 0.25f);
+    }
 }

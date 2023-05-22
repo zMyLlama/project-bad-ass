@@ -15,7 +15,7 @@ public class MachineGunAttack : MonoBehaviour
     public void LaunchAttack(EnemyController sender)
     {
         IEnumerator startAttack() {
-            sender._shakeManager.addShakeWithPriority(1, 1, sender.stats.timeBetweenChargeAndFireball, 1);
+            sender.shakeManager.addShakeWithPriority(1, 1, sender.stats.timeBetweenChargeAndFireball, 1);
             sender.chargeParticle.GetComponent<ParticleSystem>().Play();
             
             yield return new WaitForSeconds(sender.stats.timeBetweenChargeAndFireball);
@@ -24,7 +24,7 @@ public class MachineGunAttack : MonoBehaviour
 
             for (int i = 0; i < bulletsAmount; i++)
             {
-                sender._shakeManager.addShakeWithPriority(2, 1, 0.1f, 10);
+                sender.shakeManager.addShakeWithPriority(2, 1, 0.1f, 10);
 
                 GameObject fireball = Instantiate(sender.stats.primaryProjectilePrefab, transform.position, Quaternion.identity);
 
@@ -33,15 +33,15 @@ public class MachineGunAttack : MonoBehaviour
                 Destroy(SFX, 1f);
 
 
-                Vector2 _toPosition = sender._target.position;
+                Vector2 _toPosition = sender.target.position;
                 Vector2 _fromPosition = transform.position;
                 fireball.transform.right = _toPosition - _fromPosition;
-                fireball.GetComponent<Fireball>().bulletSettings.target = sender._target.transform.position;
+                fireball.GetComponent<Fireball>().bulletSettings.target = sender.target.transform.position;
 
                 yield return new WaitForSeconds(Remap(i, 0, bulletsAmount, timeBetweenEachShot, timeBetweenEachShot * 2));
             }
 
-            sender.CD = 0;
+            sender.cd = 0;
         }
 
         StartCoroutine(startAttack());
